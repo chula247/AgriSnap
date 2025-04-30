@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="buyOption" type="id" />
+    <item name="sellOption" type="id" />
+    <item name="buyCircle" type="id" />
+    <item name="sellCircle" type="id" />
+    <item name="searchView" type="id" />
+    <item name="categoriesLayout" type="id" />
+    <item name="swipeRefreshLayout" type="id" />
+    <item name="productsRecyclerView" type="id" />
+</resources>
