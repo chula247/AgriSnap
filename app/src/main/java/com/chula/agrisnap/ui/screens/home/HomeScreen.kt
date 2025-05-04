@@ -51,6 +51,8 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.chula.agrisnap.R
 import com.chula.agrisnap.navigation.ROUT_GRAIN
+import com.chula.agrisnap.navigation.ROUT_HOME
+import com.chula.agrisnap.navigation.ROUT_VEGETABLE
 import com.chula.agrisnap.ui.theme.neworange
 import com.chula.agrisnap.ui.theme.plue
 import com.chula.agrisnap.ui.theme.plue1
@@ -87,6 +89,7 @@ fun HomeScreen(navController: NavController){
                     label = { Text("Add") },
                     selected = selectedIndex == 1,
                     onClick = { selectedIndex = 1
+                        navController.navigate(ROUT_VEGETABLE)
 
                     }
                 )

@@ -1,14 +1,8 @@
 package com.chula.agrisnap.ui.screens.grain
 
-import android.app.Fragment
-import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.LinearLayout
-import androidx.compose.foundation.Image
+import android.util.Log
 import androidx.compose.foundation.background
+import androidx.compose.runtime.*
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -20,20 +14,15 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.AddCircle
-import androidx.compose.material.icons.filled.Edit
-import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Divider
@@ -42,11 +31,8 @@ import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults
-import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.NavigationBar
-import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -58,10 +44,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.graphics.Shadow
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
@@ -69,9 +57,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
-import com.chula.agrisnap.R
-import com.chula.agrisnap.navigation.ROUT_HOME
-import com.chula.agrisnap.ui.theme.green
 import com.chula.agrisnap.ui.theme.neworange
 
 
@@ -151,7 +136,7 @@ fun PostScreen(navController: NavController){
                         Card(
                             modifier = Modifier
                                 .fillMaxSize()
-                                .height(150.dp)
+                                .height(250.dp)
                                 .align(alignment = Alignment.BottomCenter)
                                 .padding(start = 20.dp, end = 20.dp, bottom = 90.dp)
                                 .offset(y = 70.dp)
@@ -177,7 +162,7 @@ fun PostScreen(navController: NavController){
                                     )
                                     Spacer(modifier = Modifier.height(10.dp))
 
-                           //Selection part
+                                    //Selection part
                                     var selectedOption by remember { mutableStateOf("Buy") }
 
                                     Row(
@@ -206,13 +191,29 @@ fun PostScreen(navController: NavController){
                                         )
                                     }
 
-                              //End of selecton part
+                                    //End of selecton part
                                     Spacer(modifier = Modifier.height(30.dp))
 
                                     var expanded by remember { mutableStateOf(false) }
                                     var selectedOptionText by remember { mutableStateOf("") }
 
-                                    val options = listOf("Teff", "Wheat", "Oats", "Rice", "Corn","Barley","Sorghum","Rye","Millet","Tritical","Amaranth","Buckwheat","Quinoa","Spelt","Fonio") // Your options here
+                                    val options = listOf(
+                                        "Teff",
+                                        "Wheat",
+                                        "Oats",
+                                        "Rice",
+                                        "Corn",
+                                        "Barley",
+                                        "Sorghum",
+                                        "Rye",
+                                        "Millet",
+                                        "Tritical",
+                                        "Amaranth",
+                                        "Buckwheat",
+                                        "Quinoa",
+                                        "Spelt",
+                                        "Fonio"
+                                    ) // Your options here
 
                                     Column {
                                         Text(
@@ -232,7 +233,11 @@ fun PostScreen(navController: NavController){
                                                 onValueChange = {},
                                                 readOnly = true,
                                                 label = { Text("Select type") },
-                                                trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
+                                                trailingIcon = {
+                                                    ExposedDropdownMenuDefaults.TrailingIcon(
+                                                        expanded = expanded
+                                                    )
+                                                },
                                                 modifier = Modifier.menuAnchor()
                                             )
 
@@ -256,9 +261,11 @@ fun PostScreen(navController: NavController){
                                     Spacer(modifier = Modifier.height(10.dp))
 
                                     var isEditing by remember { mutableStateOf(false) }
-                                    var address by remember { mutableStateOf(
-                                        "No.30, Raju colony,\nRayachoty-Galiveedu Rd,\nKothapeta, Rayachoty,\nAndhra Pradesh-516264"
-                                    ) }
+                                    var address by remember {
+                                        mutableStateOf(
+                                            "No.30, Raju colony,\nRayachoty-Galiveedu Rd,\nKothapeta, Rayachoty,\nAndhra Pradesh-516264"
+                                        )
+                                    }
 
                                     Column {
                                         Text(
@@ -368,7 +375,8 @@ fun PostScreen(navController: NavController){
 
                                         var expanded by remember { mutableStateOf(false) } // for dropdown
                                         var selectedUnit by remember { mutableStateOf("kg") } // selected unit
-                                        val unitOptions = listOf("kg", "g", "lb", "oz") // units list
+                                        val unitOptions =
+                                            listOf("kg", "g", "lb", "oz") // units list
 
                                         Row(
                                             verticalAlignment = Alignment.CenterVertically,
@@ -442,14 +450,19 @@ fun PostScreen(navController: NavController){
                                     }
 
 
-
                                     var expandedQuantity by remember { mutableStateOf(false) }
                                     var quantity by remember { mutableStateOf("1") } // Default quantity
-                                    val quantityOptions = listOf("1", "2", "5", "10", "50", "100") // Quantity options
+                                    val quantityOptions =
+                                        listOf("1", "2", "5", "10", "50", "100") // Quantity options
 
                                     var expandedPrice by remember { mutableStateOf(false) }
                                     var pricePerUnit by remember { mutableStateOf("0.00") } // Default price
-                                    val priceOptions = listOf("1.00", "2.50", "5.00", "10.00") // Suggested price options
+                                    val priceOptions = listOf(
+                                        "1.00",
+                                        "2.50",
+                                        "5.00",
+                                        "10.00"
+                                    ) // Suggested price options
 
                                     Row(
                                         verticalAlignment = Alignment.CenterVertically,
@@ -511,7 +524,9 @@ fun PostScreen(navController: NavController){
                                                 singleLine = true,
                                                 modifier = Modifier
                                                     .fillMaxWidth()
-                                                    .clickable { expandedPrice = true } // Clicking inside the box shows dropdown
+                                                    .clickable {
+                                                        expandedPrice = true
+                                                    } // Clicking inside the box shows dropdown
                                             )
 
                                             DropdownMenu(
@@ -531,6 +546,65 @@ fun PostScreen(navController: NavController){
                                         }
                                     }
 
+                                    Spacer(modifier = Modifier.height(24.dp))
+                                    @Composable
+                                    fun YourScreenName() {
+                                        // your remember code
+                                        var selectedGrainType by remember { mutableStateOf("Maize") }
+
+           // Glowing Pay Button
+                                    Button(
+                                        onClick = {
+                                            // Call payment function or trigger STK Push here
+
+                                            val appName = "GrainPay"
+                                            val grainType = selectedGrainType // e.g., "Maize"
+                                            val amount = pricePerUnit
+
+                                            val message = """
+            $appName Payment
+            Grain Type: $grainType
+            Amount: KES $amount
+            Please enter your MPesa PIN to complete the transaction.
+        """.trimIndent()
+
+                                            // This would ideally be sent to backend to initiate an STK Push
+                                            Log.d("Payment", message)
+                                            // TODO: Trigger MPesa STK Push from ViewModel/backend
+                                        },
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .padding(horizontal = 16.dp)
+                                            .shadow(10.dp, shape = RoundedCornerShape(50))
+                                            .background(
+                                                brush = Brush.horizontalGradient(
+                                                    colors = listOf(
+                                                        Color(0xFF00C853),
+                                                        Color(0xFF64DD17)
+                                                    )
+                                                ),
+                                                shape = RoundedCornerShape(50)
+                                            ),
+                                        colors = ButtonDefaults.buttonColors(
+                                            containerColor = Color.Transparent
+                                        ),
+                                        shape = RoundedCornerShape(50)
+                                    ) {
+                                        Text(
+                                            text = "Pay",
+                                            style = TextStyle(
+                                                fontSize = 18.sp,
+                                                fontWeight = FontWeight.Bold,
+                                                color = Color.White,
+                                                shadow = Shadow(
+                                                    color = Color.Black,
+                                                    offset = Offset(2f, 2f),
+                                                    blurRadius = 4f
+                                                )
+                                            )
+                                        )
+                                    }
+                                }
 
 
 
@@ -557,48 +631,8 @@ fun PostScreen(navController: NavController){
                             .verticalScroll(rememberScrollState())
                     ){
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
                     }
                 }
-
-
-
-
-
-
-
-
-
 
 
 
