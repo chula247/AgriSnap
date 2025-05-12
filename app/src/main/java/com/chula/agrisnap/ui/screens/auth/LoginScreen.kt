@@ -1,4 +1,4 @@
-package com.chula.agrisnaps.ui.screens.auth
+package com.chula.agrisnap.ui.screens.auth
 
 import android.widget.Toast
 import androidx.compose.foundation.background
@@ -22,8 +22,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.chula.agrisnap.R
-import com.chula.agrisnap.navigation.ROUT_HOME
+import com.chula.agrisnap.navigation.ROUT_ADD_VEGETABLE
 import com.chula.agrisnap.navigation.ROUT_REGISTER
+import com.chula.agrisnap.navigation.ROUT_STATE
 import com.chula.agrisnap.navigation.ROUT_STATER
 import com.chula.agrisnap.viewmodel.AuthViewModel
 
@@ -44,8 +45,14 @@ fun LoginScreen(
             if (user == null) {
                 Toast.makeText(context, "Invalid Credentials", Toast.LENGTH_SHORT).show()
             } else {
-                navController.navigate(ROUT_STATER)
-            }
+
+                if (user.role == "seller") {
+                    navController.navigate(ROUT_STATE) {
+                    }
+                } else {
+                    navController.navigate(ROUT_STATER) {
+                    }
+                }            }
         }
     }
 

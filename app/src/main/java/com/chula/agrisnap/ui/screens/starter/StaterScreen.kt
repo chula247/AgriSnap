@@ -44,6 +44,8 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.foundation.Image
 import androidx.compose.ui.geometry.Offset
 import com.chula.agrisnap.R // Replace with your package name
+import com.chula.agrisnap.navigation.ROUTE_OFFER
+import com.chula.agrisnap.navigation.ROUTE_PROMOTION
 import com.chula.agrisnap.navigation.ROUT_CART
 import com.chula.agrisnap.navigation.ROUT_CHATS
 
@@ -120,11 +122,7 @@ fun StaterScreen(navController: NavController) {
                 )
             }
         },
-        floatingActionButton = {
-            FloatingActionButton(onClick = {}, containerColor = green) {
-                Icon(Icons.Default.Add, contentDescription = "Add")
-            }
-        },
+
         content = { paddingValues ->
             val scrollState = rememberScrollState()
             val coroutineScope = rememberCoroutineScope()
@@ -200,7 +198,7 @@ fun StaterScreen(navController: NavController) {
                                         modifier = Modifier.padding(8.dp)
                                     )
                                     Button(
-                                        onClick = {},
+                                        onClick = { ROUTE_OFFER},
                                         modifier = Modifier.padding(horizontal = 8.dp)
                                     ) {
                                         Text(buttonText)
@@ -467,7 +465,7 @@ fun StaterScreen(navController: NavController) {
                                                     )
                                                     Spacer(modifier = Modifier.height(4.dp))
                                                     Button(
-                                                        onClick = { /* TODO: Handle promotion click */ },
+                                                        onClick = { ROUTE_PROMOTION },
                                                         colors = ButtonDefaults.buttonColors(containerColor = Color.White),
                                                         shape = RoundedCornerShape(12.dp),
                                                         contentPadding = PaddingValues(horizontal = 16.dp, vertical = 4.dp),

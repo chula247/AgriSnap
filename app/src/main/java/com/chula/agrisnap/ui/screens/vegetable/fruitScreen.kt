@@ -1,4 +1,4 @@
-package com.chula.agrisnap.ui.screens.dairy
+package com.chula.agrisnap.ui.screens.vegetables
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -27,23 +27,23 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
-import com.chula.agrisnap.navigation.ROUT_DAIRY
+import com.chula.agrisnap.navigation.ROUT_GRAIN
 import com.chula.agrisnap.navigation.ROUT_PROFILE
 import com.chula.agrisnap.navigation.ROUT_STATER
 import com.chula.agrisnap.ui.theme.green
-import com.chula.agrisnap.viewmodel.DairyViewModel
+import com.chula.agrisnap.viewmodel.VegetableViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun DairyScreen(navController: NavController, dairyViewModel: DairyViewModel = viewModel()) {
+fun VegetableScreen(navController: NavController, vegetableViewModel: VegetableViewModel = viewModel()) {
     var selectedIndex by remember { mutableStateOf(0) }
 
-    val dairyItems = dairyViewModel.allDairies.observeAsState(emptyList()).value
+    val vegetables = vegetableViewModel.allVegetables.observeAsState(emptyList()).value
 
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("My Dairy List") },
+                title = { Text("My Vegetable List") },
                 navigationIcon = {
                     IconButton(onClick = { /* Handle back/nav */ }) {
                         Icon(Icons.Default.ArrowBack, contentDescription = "Back")
@@ -111,7 +111,7 @@ fun DairyScreen(navController: NavController, dairyViewModel: DairyViewModel = v
                     contentPadding = PaddingValues(horizontal = 4.dp),
                     horizontalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
-                    items(dairyItems) { dairy ->
+                    items(vegetables) { vegetable ->
                         Card(
                             shape = RoundedCornerShape(12.dp),
                             elevation = CardDefaults.cardElevation(4.dp),
@@ -120,8 +120,8 @@ fun DairyScreen(navController: NavController, dairyViewModel: DairyViewModel = v
                                 .height(150.dp)
                         ) {
                             AsyncImage(
-                                model = dairy.imagePath,
-                                contentDescription = dairy.name,
+                                model = vegetable.imagePath,
+                                contentDescription = vegetable.name,
                                 contentScale = ContentScale.Crop,
                                 modifier = Modifier.fillMaxSize()
                             )
@@ -136,19 +136,19 @@ fun DairyScreen(navController: NavController, dairyViewModel: DairyViewModel = v
                         .fillMaxSize()
                         .verticalScroll(rememberScrollState())
                 ) {
-                    dairyItems.chunked(3).forEach { dairyRow ->
+                    vegetables.chunked(3).forEach { vegetableRow ->
                         Row(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .padding(horizontal = 16.dp),
                             horizontalArrangement = Arrangement.SpaceEvenly
                         ) {
-                            dairyRow.forEach { dairy ->
+                            vegetableRow.forEach { vegetable ->
                                 Card(
                                     modifier = Modifier
                                         .width(110.dp)
                                         .height(200.dp)
-                                        .clickable { navController.navigate(ROUT_DAIRY) },
+                                        .clickable { navController.navigate(ROUT_GRAIN) },
                                     elevation = CardDefaults.cardElevation(4.dp)
                                 ) {
                                     Column(
@@ -159,15 +159,15 @@ fun DairyScreen(navController: NavController, dairyViewModel: DairyViewModel = v
                                         verticalArrangement = Arrangement.SpaceBetween
                                     ) {
                                         AsyncImage(
-                                            model = dairy.imagePath,
-                                            contentDescription = dairy.name,
+                                            model = vegetable.imagePath,
+                                            contentDescription = vegetable.name,
                                             contentScale = ContentScale.Crop,
                                             modifier = Modifier
                                                 .size(70.dp)
                                                 .padding(top = 4.dp)
                                         )
-                                        Text(text = dairy.name, fontSize = 16.sp)
-                                        Text(text = dairy.price.toString(), fontSize = 14.sp, color = Color.Gray)
+                                        Text(text = vegetable.name, fontSize = 16.sp)
+                                        Text(text = vegetable.price.toString(), fontSize = 14.sp, color = Color.Gray)
                                         Button(
                                             onClick = { /* Handle payment */ },
                                             modifier = Modifier
@@ -189,6 +189,6 @@ fun DairyScreen(navController: NavController, dairyViewModel: DairyViewModel = v
 
 @Preview(showBackground = true)
 @Composable
-fun DairyScreenPreview() {
-    DairyScreen(navController = rememberNavController())
+fun VegetableScreenPreview() {
+    VegetableScreen(navController = rememberNavController())
 }

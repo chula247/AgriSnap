@@ -1,22 +1,19 @@
 package com.chula.agrisnap.ui.screens.chats
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
-import androidx.compose.foundation.background
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
@@ -24,17 +21,22 @@ import androidx.compose.ui.graphics.Shadow
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import com.chula.agrisnap.R
-import com.chula.agrisnap.model.ChatMessage
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.compose.rememberNavController
+import com.chula.agrisnap.viewmodel.ChatViewModel
 
 @Composable
 fun ChatsScreen(navController: NavController) {
-    val messages = listOf(
-        ChatMessage("Alice", "Hello, how are your eggs today?", R.drawable.profile1),
-        ChatMessage("You", "Very fresh and affordable!", R.drawable.profile2),
+    val viewModel: ChatViewModel = viewModel(
+        modelClass = ChatViewModel::class.java,
+        key = "chatViewModel"
     )
+    val messages = viewModel.messages
     var newMessage by remember { mutableStateOf("") }
 
     Column(modifier = Modifier.fillMaxSize()) {
@@ -46,71 +48,65 @@ fun ChatsScreen(navController: NavController) {
                 .padding(16.dp)
         ) {
             IconButton(onClick = { navController.popBackStack() }) {
-                Icon(
-                    imageVector = Icons.Default.ArrowBack,
-                    contentDescription = "Back",
-                    tint = Color(0xFF4CAF50)
-                )
+                Icon(Icons.Default.ArrowBack, contentDescription = "Back", tint = Color(0xFF4CAF50))
             }
             Text(
                 "Chat Now",
                 style = TextStyle(
                     fontSize = 24.sp,
                     fontWeight = FontWeight.Bold,
-                    shadow = Shadow(
-                        color = Color.Magenta,
-                        offset = Offset(2f, 2f),
-                        blurRadius = 4f
-                    )
+                    shadow = Shadow(Color.Magenta, Offset(2f, 2f), 4f)
                 ),
                 modifier = Modifier.padding(start = 8.dp)
             )
         }
 
-        // Messages
-        LazyColumn(modifier = Modifier.weight(1f).padding(horizontal = 8.dp)) {
+        // Message list
+        LazyColumn(
+            modifier = Modifier
+                .weight(1f)
+                .padding(horizontal = 8.dp)
+        ) {
             items(messages) { message ->
+                val isSender = message.sender == "You"
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier
-                        .padding(vertical = 8.dp)
                         .fillMaxWidth()
+                        .padding(vertical = 8.dp)
+                        .padding(start = if (isSender) 64.dp else 8.dp, end = if (isSender) 8.dp else 64.dp)
                 ) {
-                    // Profile Image
-                    Image(
-                        painter = painterResource(id = message.profileImage),
-                        contentDescription = "Profile",
-                        modifier = Modifier
-                            .size(40.dp)
-                            .clip(CircleShape)
-                    )
-
-                    Spacer(modifier = Modifier.width(8.dp))
-
+                    if (!isSender) {
+                        Image(
+                            painter = painterResource(id = message.profileImage),
+                            contentDescription = "Profile",
+                            modifier = Modifier.size(40.dp).clip(CircleShape)
+                        )
+                    }
                     Spacer(modifier = Modifier.width(8.dp))
                     Surface(
-                        color = Color(0xFFE0F7FA),
+                        color = if (isSender) Color(0xFFB2FF59) else Color(0xFFE0F7FA),
                         shape = RoundedCornerShape(8.dp),
                         modifier = Modifier.weight(1f)
                     ) {
-                        // Message Text
                         Text(
-                            text = "${message.sender}: ${message.text}", // Ensuring the message text is passed properly
-                            modifier = Modifier
-                                .padding(12.dp)
-                                .background(
-                                    color = MaterialTheme.colorScheme.surfaceVariant,
-                                    shape = RoundedCornerShape(8.dp)
-                                )
-                                .padding(12.dp), // Inner padding of the chat bubble
+                            text = "${message.sender}: ${message.text}",
+                            modifier = Modifier.padding(12.dp),
                             style = MaterialTheme.typography.bodyMedium
+                        )
+                    }
+                    if (isSender) {
+                        Image(
+                            painter = painterResource(id = message.profileImage),
+                            contentDescription = "Profile",
+                            modifier = Modifier.size(40.dp).clip(CircleShape)
                         )
                     }
                 }
             }
         }
 
-        // Input
+        // Input section
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -121,15 +117,31 @@ fun ChatsScreen(navController: NavController) {
                 value = newMessage,
                 onValueChange = { newMessage = it },
                 label = { Text("Type a message") },
-                modifier = Modifier.weight(1f)
+                modifier = Modifier
+                    .weight(1f)
+                    .border(1.dp, Color.Gray, RoundedCornerShape(50))
+                    .background(Color.Transparent, RoundedCornerShape(50)),
+                shape = RoundedCornerShape(50),
+                singleLine = true
             )
             Spacer(modifier = Modifier.width(8.dp))
-            Button(onClick = {
-                // Send message action
-            }) {
+            Button(
+                onClick = {
+                    viewModel.sendMessage(newMessage)
+                    newMessage = ""
+                },
+                shape = RoundedCornerShape(50)
+            ) {
                 Text("Send")
             }
         }
     }
 }
+@Preview(showBackground = true)
+@Composable
+fun ChatsScreenPreview() {
+    val navController = rememberNavController()
 
+    // Optional: Use a ViewModelProvider if needed for advanced mocking.
+    ChatsScreen(navController = navController)
+}

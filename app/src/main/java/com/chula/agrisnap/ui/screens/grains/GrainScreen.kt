@@ -1,4 +1,5 @@
-package com.chula.agrisnap.ui.screens.dairy
+package com.chula.agrisnap.ui.screens.grains
+
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -27,25 +28,25 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
-import com.chula.agrisnap.navigation.ROUT_DAIRY
+import com.chula.agrisnap.navigation.ROUT_GRAIN
 import com.chula.agrisnap.navigation.ROUT_PROFILE
 import com.chula.agrisnap.navigation.ROUT_STATER
 import com.chula.agrisnap.ui.theme.green
-import com.chula.agrisnap.viewmodel.DairyViewModel
+import com.chula.agrisnap.viewmodel.GrainViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun DairyScreen(navController: NavController, dairyViewModel: DairyViewModel = viewModel()) {
+fun GrainScreen(navController: NavController, grainViewModel: GrainViewModel = viewModel()) {
     var selectedIndex by remember { mutableStateOf(0) }
 
-    val dairyItems = dairyViewModel.allDairies.observeAsState(emptyList()).value
+    val grainItems = grainViewModel.allGrains.observeAsState(emptyList()).value
 
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("My Dairy List") },
+                title = { Text("My Grain List") },
                 navigationIcon = {
-                    IconButton(onClick = { /* Handle back/nav */ }) {
+                    IconButton(onClick = { /* Handle back */ }) {
                         Icon(Icons.Default.ArrowBack, contentDescription = "Back")
                     }
                 },
@@ -88,7 +89,7 @@ fun DairyScreen(navController: NavController, dairyViewModel: DairyViewModel = v
 
         floatingActionButton = {
             FloatingActionButton(
-                onClick = { /* Add action */ },
+                onClick = { /* Add grain item */ },
                 containerColor = green
             ) {
                 Icon(Icons.Default.Add, contentDescription = "Add")
@@ -111,7 +112,7 @@ fun DairyScreen(navController: NavController, dairyViewModel: DairyViewModel = v
                     contentPadding = PaddingValues(horizontal = 4.dp),
                     horizontalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
-                    items(dairyItems) { dairy ->
+                    items(grainItems) { grain ->
                         Card(
                             shape = RoundedCornerShape(12.dp),
                             elevation = CardDefaults.cardElevation(4.dp),
@@ -120,8 +121,8 @@ fun DairyScreen(navController: NavController, dairyViewModel: DairyViewModel = v
                                 .height(150.dp)
                         ) {
                             AsyncImage(
-                                model = dairy.imagePath,
-                                contentDescription = dairy.name,
+                                model = grain.imagePath,
+                                contentDescription = grain.name,
                                 contentScale = ContentScale.Crop,
                                 modifier = Modifier.fillMaxSize()
                             )
@@ -136,19 +137,19 @@ fun DairyScreen(navController: NavController, dairyViewModel: DairyViewModel = v
                         .fillMaxSize()
                         .verticalScroll(rememberScrollState())
                 ) {
-                    dairyItems.chunked(3).forEach { dairyRow ->
+                    grainItems.chunked(3).forEach { grainRow ->
                         Row(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .padding(horizontal = 16.dp),
                             horizontalArrangement = Arrangement.SpaceEvenly
                         ) {
-                            dairyRow.forEach { dairy ->
+                            grainRow.forEach { grain ->
                                 Card(
                                     modifier = Modifier
                                         .width(110.dp)
                                         .height(200.dp)
-                                        .clickable { navController.navigate(ROUT_DAIRY) },
+                                        .clickable { navController.navigate(ROUT_GRAIN) },
                                     elevation = CardDefaults.cardElevation(4.dp)
                                 ) {
                                     Column(
@@ -159,15 +160,15 @@ fun DairyScreen(navController: NavController, dairyViewModel: DairyViewModel = v
                                         verticalArrangement = Arrangement.SpaceBetween
                                     ) {
                                         AsyncImage(
-                                            model = dairy.imagePath,
-                                            contentDescription = dairy.name,
+                                            model = grain.imagePath,
+                                            contentDescription = grain.name,
                                             contentScale = ContentScale.Crop,
                                             modifier = Modifier
                                                 .size(70.dp)
                                                 .padding(top = 4.dp)
                                         )
-                                        Text(text = dairy.name, fontSize = 16.sp)
-                                        Text(text = dairy.price.toString(), fontSize = 14.sp, color = Color.Gray)
+                                        Text(text = grain.name, fontSize = 16.sp)
+                                        Text(text = grain.price.toString(), fontSize = 14.sp, color = Color.Gray)
                                         Button(
                                             onClick = { /* Handle payment */ },
                                             modifier = Modifier
@@ -189,6 +190,6 @@ fun DairyScreen(navController: NavController, dairyViewModel: DairyViewModel = v
 
 @Preview(showBackground = true)
 @Composable
-fun DairyScreenPreview() {
-    DairyScreen(navController = rememberNavController())
+fun GrainScreenPreview() {
+    GrainScreen(navController = rememberNavController())
 }
