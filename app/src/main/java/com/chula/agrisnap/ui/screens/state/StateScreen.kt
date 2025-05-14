@@ -35,6 +35,7 @@ import androidx.navigation.compose.rememberNavController
 import com.chula.agrisnap.R
 import com.chula.agrisnap.navigation.ROUT_ADD_DAIRY
 import com.chula.agrisnap.navigation.ROUT_ADD_FRUIT
+import com.chula.agrisnap.navigation.ROUT_ADD_GRAIN
 import com.chula.agrisnap.navigation.ROUT_ADD_OFFER
 import com.chula.agrisnap.navigation.ROUT_ADD_PROMOTION
 import com.chula.agrisnap.navigation.ROUT_ADD_VEGETABLE
@@ -88,7 +89,7 @@ fun StateScreen(navController: NavController, userName: String = "Farmer") {
                 navController.navigate(ROUT_ADD_FRUIT)
             }
             CategoryItem("Grains", R.drawable.grains) {
-                navController.navigate(ROUT_ADD_FRUIT)
+                navController.navigate(ROUT_ADD_GRAIN)
             }
             CategoryItem("Dairy", R.drawable.dairy) {
                 navController.navigate(ROUT_ADD_DAIRY)
@@ -96,9 +97,7 @@ fun StateScreen(navController: NavController, userName: String = "Farmer") {
             CategoryItem("Offer", R.drawable.poultry) {
                 navController.navigate(ROUT_ADD_OFFER)
             }
-            CategoryItem("Promotion", R.drawable.poultry) {
-                navController.navigate(ROUT_ADD_PROMOTION)
-            }
+
         }
 
         Spacer(modifier = Modifier.height(24.dp))

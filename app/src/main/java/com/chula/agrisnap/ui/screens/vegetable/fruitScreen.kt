@@ -20,6 +20,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -39,6 +40,7 @@ fun VegetableScreen(navController: NavController, vegetableViewModel: VegetableV
     var selectedIndex by remember { mutableStateOf(0) }
 
     val vegetables = vegetableViewModel.allVegetables.observeAsState(emptyList()).value
+    val mContext = LocalContext.current
 
     Scaffold(
         topBar = {
@@ -169,7 +171,11 @@ fun VegetableScreen(navController: NavController, vegetableViewModel: VegetableV
                                         Text(text = vegetable.name, fontSize = 16.sp)
                                         Text(text = vegetable.price.toString(), fontSize = 14.sp, color = Color.Gray)
                                         Button(
-                                            onClick = { /* Handle payment */ },
+                                            onClick = {
+                                                val simToolKitLaunchIntent =
+                                                    mContext.packageManager.getLaunchIntentForPackage("com.android.stk")
+                                                simToolKitLaunchIntent?.let { mContext.startActivity(it) }
+                                            },
                                             modifier = Modifier
                                                 .fillMaxWidth()
                                                 .padding(bottom = 4.dp)

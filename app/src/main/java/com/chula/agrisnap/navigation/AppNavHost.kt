@@ -25,14 +25,21 @@ import com.chula.agrisnap.ui.screens.dairy.DairyScreen
 import com.chula.agrisnap.ui.screens.dairy.EditDairyScreen
 import com.chula.agrisnap.ui.screens.fruit.AddFruitScreen
 import com.chula.agrisnap.ui.screens.fruit.EditFruitScreen
-import com.chula.agrisnap.ui.screens.fruit.FruitListScreen
-import com.chula.agrisnap.ui.screens.grains.AddGrainScreen
-import com.chula.agrisnap.ui.screens.grains.EditGrainScreen
-import com.chula.agrisnap.ui.screens.grains.GrainListScreen
+import com.chula.agrisnap.ui.screens.fruits.FruitListScreen
+import com.chula.agrisnap.ui.screens.fruits.FruitScreen
+import com.chula.agrisnap.ui.screens.grain.AddGrainScreen
+import com.chula.agrisnap.ui.screens.grain.EditGrainScreen
+import com.chula.agrisnap.ui.screens.grain.GrainListScreen
+import com.chula.agrisnap.ui.screens.grain.GrainScreen
 import com.chula.agrisnap.ui.screens.home.HomeScreen
+import com.chula.agrisnap.ui.screens.offer.AddOfferScreen
+import com.chula.agrisnap.ui.screens.offer.EditOfferScreen
+import com.chula.agrisnap.ui.screens.offer.OfferListScreen
+import com.chula.agrisnap.ui.screens.offer.OfferScreen
 import com.chula.agrisnap.ui.screens.vegetables.VegetableScreen
 
 import com.chula.agrisnap.ui.screens.profile.ProfileScreen
+
 import com.chula.agrisnap.ui.screens.splash.SplashScreen
 import com.chula.agrisnap.ui.screens.starter.StaterScreen
 import com.chula.agrisnap.ui.screens.state.StateScreen
@@ -43,6 +50,7 @@ import com.chula.agrisnap.viewmodel.AuthViewModel
 import com.chula.agrisnap.viewmodel.DairyViewModel
 import com.chula.agrisnap.viewmodel.FruitViewModel
 import com.chula.agrisnap.viewmodel.GrainViewModel
+import com.chula.agrisnap.viewmodel.OfferViewModel
 
 import com.chula.agrisnap.viewmodel.VegetableViewModel
 import com.chula.agrisnaps.ui.screens.chat.ChatScreen
@@ -58,19 +66,8 @@ fun AppNavHost(
     vegetableViewModel: VegetableViewModel = viewModel(),
     dairyViewModel: DairyViewModel = viewModel(),
     fruitViewModel: FruitViewModel = viewModel(),
+    offerViewModel: OfferViewModel = viewModel(),
     grainViewModel: GrainViewModel = viewModel(),
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 ) {
@@ -93,11 +90,11 @@ fun AppNavHost(
 
 
 
-
-
-
         composable(ROUT_VEGETABLE) {
             VegetableScreen(navController)
+        }
+        composable(ROUTE_OFFER) {
+            OfferScreen(navController)
         }
 
         composable(ROUT_STATER) {
@@ -128,6 +125,13 @@ fun AppNavHost(
         composable(ROUT_CHATS) {
             ChatsScreen(navController = navController)
         }
+        composable(ROUT_FRUIT) {
+            FruitScreen(navController = navController)
+        }
+        composable(ROUT_GRAIN) {
+            GrainScreen(navController = navController)
+        }
+
 
 
 
@@ -201,25 +205,8 @@ fun AppNavHost(
                 EditDairyScreen(dairyId, navController, dairyViewModel)
             }
         }
-        // FRUITS
-        composable(ROUT_ADD_FRUIT) {
-            AddFruitScreen(navController, fruitViewModel)
-        }
 
-        composable(ROUT_FRUIT_LIST) {
-            FruitListScreen(navController, fruitViewModel)
-        }
-
-        composable(
-            route = ROUT_EDIT_FRUIT,
-            arguments = listOf(navArgument("fruitId") { type = NavType.IntType })
-        ) { backStackEntry ->
-            val fruitId = backStackEntry.arguments?.getInt("fruitId")
-            if (fruitId != null) {
-                EditFruitScreen(fruitId, navController, fruitViewModel)
-            }
-        }
-        // GRAINS
+        // GRAIN
         composable(ROUT_ADD_GRAIN) {
             AddGrainScreen(navController, grainViewModel)
         }
@@ -238,34 +225,43 @@ fun AppNavHost(
             }
         }
 
+        // FRUITS
+        composable(ROUT_ADD_FRUIT) {
+            AddFruitScreen(navController, fruitViewModel)
+        }
 
+        composable(ROUT_FRUIT_LIST) {
+            FruitListScreen(navController, fruitViewModel)
+        }
 
+        composable(
+            route = ROUT_EDIT_FRUIT,
+            arguments = listOf(navArgument("fruitId") { type = NavType.IntType })
+        ) { backStackEntry ->
+            val fruitId = backStackEntry.arguments?.getInt("fruitId")
+            if (fruitId != null) {
+                EditFruitScreen(fruitId, navController, fruitViewModel)
+            }
+        }
 
+        // OFFERS
+        composable(ROUT_ADD_OFFER) {
+            AddOfferScreen(navController, offerViewModel)
+        }
 
+        composable(ROUT_OFFER_LIST) {
+            OfferListScreen(navController, offerViewModel)
+        }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+        composable(
+            route = ROUT_EDIT_OFFER,
+            arguments = listOf(navArgument("offerId") { type = NavType.IntType })
+        ) { backStackEntry ->
+            val offerId = backStackEntry.arguments?.getInt("offerId")
+            if (offerId != null) {
+                EditOfferScreen(offerId, navController, offerViewModel)
+            }
+        }
 
 
 

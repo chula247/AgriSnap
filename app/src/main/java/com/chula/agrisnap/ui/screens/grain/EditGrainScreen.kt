@@ -1,5 +1,4 @@
-package com.chula.agrisnap.ui.screens.grains
-
+package com.chula.agrisnap.ui.screens.grain
 
 import android.net.Uri
 import android.widget.Toast
@@ -29,7 +28,11 @@ import com.chula.agrisnap.viewmodel.GrainViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun EditGrainScreen(grainId: Int?, navController: NavController, viewModel: GrainViewModel) {
+fun EditGrainScreen(
+    grainId: Int?,
+    navController: NavController,
+    viewModel: GrainViewModel
+) {
     val context = LocalContext.current
     val grainList by viewModel.allGrains.observeAsState(emptyList())
     val grain = remember(grainList) { grainList.find { it.id == grainId } }
@@ -39,7 +42,9 @@ fun EditGrainScreen(grainId: Int?, navController: NavController, viewModel: Grai
     var imagePath by remember { mutableStateOf(grain?.imagePath ?: "") }
     var showMenu by remember { mutableStateOf(false) }
 
-    val imagePicker = rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
+    val imagePicker = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.GetContent()
+    ) { uri: Uri? ->
         uri?.let {
             imagePath = it.toString()
             Toast.makeText(context, "Image Selected!", Toast.LENGTH_SHORT).show()
@@ -81,7 +86,9 @@ fun EditGrainScreen(grainId: Int?, navController: NavController, viewModel: Grai
                 }
             )
         },
-        bottomBar = { BottomNavigationBarGrain(navController) }
+        bottomBar = {
+            BottomNavigationBarGrain(navController = navController)
+        }
     ) { paddingValues ->
         Column(
             modifier = Modifier
@@ -103,7 +110,7 @@ fun EditGrainScreen(grainId: Int?, navController: NavController, viewModel: Grai
                     value = price,
                     onValueChange = { price = it },
                     label = { Text("Grain Price") },
-                    keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number),
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                     modifier = Modifier.fillMaxWidth()
                 )
                 Spacer(modifier = Modifier.height(8.dp))
@@ -120,7 +127,7 @@ fun EditGrainScreen(grainId: Int?, navController: NavController, viewModel: Grai
                     onClick = { imagePicker.launch("image/*") },
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(start = 40.dp, end = 40.dp),
+                        .padding(horizontal = 40.dp),
                     colors = ButtonDefaults.buttonColors(Color.LightGray)
                 ) {
                     Text("Change Image")
@@ -142,13 +149,17 @@ fun EditGrainScreen(grainId: Int?, navController: NavController, viewModel: Grai
                     },
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(start = 40.dp, end = 40.dp),
+                        .padding(horizontal = 40.dp),
                     colors = ButtonDefaults.buttonColors(Color.Black)
                 ) {
                     Text("Update Grain")
                 }
             } else {
-                Text(text = "Grain not found", color = MaterialTheme.colorScheme.error)
+                Text(
+                    text = "Grain not found",
+                    color = MaterialTheme.colorScheme.error
+                )
+                Spacer(modifier = Modifier.height(8.dp))
                 Button(onClick = { navController.popBackStack() }) {
                     Text("Go Back")
                 }

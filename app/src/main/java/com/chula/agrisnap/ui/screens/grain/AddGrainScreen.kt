@@ -1,5 +1,4 @@
-package com.chula.agrisnap.ui.screens.grains
-
+package com.chula.agrisnap.ui.screens.grain
 
 import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -40,6 +39,7 @@ fun AddGrainScreen(navController: NavController, viewModel: GrainViewModel) {
     var imageUri by remember { mutableStateOf<Uri?>(null) }
     var showMenu by remember { mutableStateOf(false) }
 
+    val context = LocalContext.current
     val imagePicker = rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) { uri ->
         uri?.let { imageUri = it }
     }

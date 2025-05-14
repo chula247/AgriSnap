@@ -13,12 +13,12 @@ import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
@@ -31,6 +31,7 @@ import com.chula.agrisnap.viewmodel.FruitViewModel
 fun EditFruitScreen(fruitId: Int?, navController: NavController, viewModel: FruitViewModel) {
     val context = LocalContext.current
     val fruitList by viewModel.allFruits.observeAsState(emptyList())
+
     val fruit = remember(fruitList) { fruitList.find { it.id == fruitId } }
 
     var name by remember { mutableStateOf(fruit?.name ?: "") }
@@ -155,7 +156,6 @@ fun EditFruitScreen(fruitId: Int?, navController: NavController, viewModel: Frui
         }
     }
 }
-
 @Composable
 fun BottomNavigationBarFruit(navController: NavController) {
     NavigationBar(
@@ -166,7 +166,7 @@ fun BottomNavigationBarFruit(navController: NavController) {
             selected = false,
             onClick = { navController.navigate(ROUT_FRUIT_LIST) },
             icon = { Icon(Icons.Default.Menu, contentDescription = "Fruit List") },
-            label = { Text("Fruit") }
+            label = { Text("Fruits") }
         )
         NavigationBarItem(
             selected = false,
@@ -176,3 +176,4 @@ fun BottomNavigationBarFruit(navController: NavController) {
         )
     }
 }
+

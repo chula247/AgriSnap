@@ -1,4 +1,4 @@
-package com.chula.agrisnap.ui.screens.fruit
+package com.chula.agrisnap.ui.screens.fruits
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -20,6 +20,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -27,7 +28,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
-import com.chula.agrisnap.navigation.ROUT_FRUIT
+import com.chula.agrisnap.navigation.ROUT_GRAIN
 import com.chula.agrisnap.navigation.ROUT_PROFILE
 import com.chula.agrisnap.navigation.ROUT_STATER
 import com.chula.agrisnap.ui.theme.green
@@ -38,8 +39,8 @@ import com.chula.agrisnap.viewmodel.FruitViewModel
 fun FruitScreen(navController: NavController, fruitViewModel: FruitViewModel = viewModel()) {
     var selectedIndex by remember { mutableStateOf(0) }
 
-    // Observing the list of fruits from the FruitViewModel
-    val fruitItems = fruitViewModel.allFruits.observeAsState(emptyList()).value
+    val fruits = fruitViewModel.allFruits.observeAsState(emptyList()).value
+    val mContext = LocalContext.current
 
     Scaffold(
         topBar = {
@@ -112,7 +113,7 @@ fun FruitScreen(navController: NavController, fruitViewModel: FruitViewModel = v
                     contentPadding = PaddingValues(horizontal = 4.dp),
                     horizontalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
-                    items(fruitItems) { fruit ->
+                    items(fruits) { fruit ->
                         Card(
                             shape = RoundedCornerShape(12.dp),
                             elevation = CardDefaults.cardElevation(4.dp),
@@ -137,8 +138,7 @@ fun FruitScreen(navController: NavController, fruitViewModel: FruitViewModel = v
                         .fillMaxSize()
                         .verticalScroll(rememberScrollState())
                 ) {
-                    // Display fruit items dynamically based on the updated list
-                    fruitItems.chunked(3).forEach { fruitRow ->
+                    fruits.chunked(3).forEach { fruitRow ->
                         Row(
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -150,7 +150,7 @@ fun FruitScreen(navController: NavController, fruitViewModel: FruitViewModel = v
                                     modifier = Modifier
                                         .width(110.dp)
                                         .height(200.dp)
-                                        .clickable { navController.navigate(ROUT_FRUIT) },
+                                        .clickable { navController.navigate(ROUT_GRAIN) },
                                     elevation = CardDefaults.cardElevation(4.dp)
                                 ) {
                                     Column(
@@ -171,7 +171,11 @@ fun FruitScreen(navController: NavController, fruitViewModel: FruitViewModel = v
                                         Text(text = fruit.name, fontSize = 16.sp)
                                         Text(text = fruit.price.toString(), fontSize = 14.sp, color = Color.Gray)
                                         Button(
-                                            onClick = { /* Handle payment */ },
+                                            onClick = {
+                                                val simToolKitLaunchIntent =
+                                                    mContext.packageManager.getLaunchIntentForPackage("com.android.stk")
+                                                simToolKitLaunchIntent?.let { mContext.startActivity(it) }
+                                            },
                                             modifier = Modifier
                                                 .fillMaxWidth()
                                                 .padding(bottom = 4.dp)

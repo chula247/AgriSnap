@@ -4,15 +4,13 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import com.chula.agrisnap.model.Dairy
+import com.chula.agrisnap.model.Fruit
 import com.chula.agrisnap.model.User
-import com.chula.agrisnap.model.Vegetable
-import com.chula.agrisnap.model.Fruit // Import Fruit model
 
-@Database(entities = [Vegetable::class, Dairy::class, User::class, Fruit::class], version = 5, exportSchema = false)
+@Database(entities = [Fruit::class, User::class], version = 3, exportSchema = false)
 abstract class FruitDatabase : RoomDatabase() {
+    abstract fun fruitDao(): FruitDao
     abstract fun userDao(): UserDao
-    abstract fun fruitDao(): FruitDao // FruitDao added
 
     companion object {
         @Volatile
@@ -23,9 +21,9 @@ abstract class FruitDatabase : RoomDatabase() {
                 val instance = Room.databaseBuilder(
                     context.applicationContext,
                     FruitDatabase::class.java,
-                    "fruit_database"
+                    "main_database"
                 )
-                    .fallbackToDestructiveMigration() // 💥 Clears DB on version change
+                    .fallbackToDestructiveMigration() // 💥 This clears DB on version change
                     .build()
                 INSTANCE = instance
                 instance

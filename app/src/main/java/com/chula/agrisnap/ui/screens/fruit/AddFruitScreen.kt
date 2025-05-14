@@ -1,6 +1,7 @@
 package com.chula.agrisnap.ui.screens.fruit
 
 import android.net.Uri
+import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
@@ -9,8 +10,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.KeyboardArrowLeft
-import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -27,7 +27,6 @@ import coil.compose.rememberAsyncImagePainter
 import com.chula.agrisnap.R
 import com.chula.agrisnap.navigation.ROUT_ADD_FRUIT
 import com.chula.agrisnap.navigation.ROUT_FRUIT_LIST
-import com.chula.agrisnap.ui.screens.vegetable.BottomNavigationBar
 import com.chula.agrisnap.viewmodel.FruitViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -40,25 +39,32 @@ fun AddFruitScreen(navController: NavController, viewModel: FruitViewModel) {
     var showMenu by remember { mutableStateOf(false) }
 
     val context = LocalContext.current
-    val imagePicker = rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) { uri ->
-        uri?.let { imageUri = it }
+
+    val imagePicker = rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
+        uri?.let {
+            imageUri = it
+            Log.d("ImagePicker", "Selected image URI: $it")
+        }
     }
 
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Add Fruit") },
+                title = { Text("Add Fruit", fontSize = 20.sp, fontWeight = FontWeight.Bold) },
                 colors = TopAppBarDefaults.mediumTopAppBarColors(Color.LightGray),
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
-                        Icon(Icons.Default.KeyboardArrowLeft, contentDescription = "Back")
+                        Icon(imageVector = Icons.Default.KeyboardArrowLeft, contentDescription = "Back")
                     }
                 },
                 actions = {
                     IconButton(onClick = { showMenu = true }) {
-                        Icon(Icons.Default.MoreVert, contentDescription = "Menu")
+                        Icon(imageVector = Icons.Default.MoreVert, contentDescription = "Menu")
                     }
-                    DropdownMenu(expanded = showMenu, onDismissRequest = { showMenu = false }) {
+                    DropdownMenu(
+                        expanded = showMenu,
+                        onDismissRequest = { showMenu = false }
+                    ) {
                         DropdownMenuItem(
                             text = { Text("Fruit List") },
                             onClick = {
@@ -128,7 +134,7 @@ fun AddFruitScreen(navController: NavController, viewModel: FruitViewModel) {
                     if (imageUri != null) {
                         Image(
                             painter = rememberAsyncImagePainter(model = imageUri),
-                            contentDescription = null,
+                            contentDescription = "Selected Image",
                             modifier = Modifier.fillMaxSize(),
                             contentScale = ContentScale.Crop
                         )
@@ -145,8 +151,8 @@ fun AddFruitScreen(navController: NavController, viewModel: FruitViewModel) {
                 Button(
                     onClick = {
                         val priceValue = price.toDoubleOrNull()
-                        if (priceValue != null && imageUri != null) {
-                            viewModel.addFruit(name, priceValue, phone, imageUri.toString())
+                        if (priceValue != null) {
+                            imageUri?.toString()?.let { viewModel.addFruit(name, priceValue, phone, it) }
                             navController.navigate(ROUT_FRUIT_LIST)
                         }
                     },
@@ -159,4 +165,31 @@ fun AddFruitScreen(navController: NavController, viewModel: FruitViewModel) {
             }
         }
     )
+}
+
+@Composable
+fun BottomNavigationBar(navController: NavController) {
+    NavigationBar(
+        containerColor = Color(0xFF6F6A72),
+        contentColor = Color.White
+    ) {
+        NavigationBarItem(
+            selected = false,
+            onClick = { navController.navigate(ROUT_FRUIT_LIST) },
+            icon = { Icon(Icons.Default.Home, contentDescription = "Fruit List") },
+            label = { Text("Home") }
+        )
+        NavigationBarItem(
+            selected = false,
+            onClick = { navController.navigate(ROUT_ADD_FRUIT) },
+            icon = { Icon(Icons.Default.AddCircle, contentDescription = "Add Fruit") },
+            label = { Text("Add") }
+        )
+        NavigationBarItem(
+            selected = false,
+            onClick = { navController.navigate(ROUT_ADD_FRUIT) },
+            icon = { Icon(painter = painterResource(R.drawable.profile), contentDescription = "") },
+            label = { Text("Profile") }
+        )
+    }
 }

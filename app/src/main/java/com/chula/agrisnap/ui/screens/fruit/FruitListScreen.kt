@@ -1,4 +1,4 @@
-package com.chula.agrisnap.ui.screens.fruit
+package com.chula.agrisnap.ui.screens.fruits
 
 import android.content.Intent
 import android.net.Uri
@@ -10,7 +10,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
@@ -30,11 +29,11 @@ import androidx.compose.ui.unit.sp
 import androidx.core.net.toUri
 import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
+import com.chula.agrisnap.viewmodel.FruitViewModel
 import com.chula.agrisnap.model.Fruit
 import com.chula.agrisnap.navigation.ROUT_ADD_FRUIT
 import com.chula.agrisnap.navigation.ROUT_FRUIT_LIST
 import com.chula.agrisnap.navigation.editFruitRoute
-import com.chula.agrisnap.viewmodel.FruitViewModel
 
 @RequiresApi(Build.VERSION_CODES.Q)
 @OptIn(ExperimentalMaterial3Api::class)
@@ -53,7 +52,7 @@ fun FruitListScreen(navController: NavController, viewModel: FruitViewModel) {
             Column {
                 TopAppBar(
                     title = { Text("Fruits", fontSize = 22.sp, fontWeight = FontWeight.SemiBold) },
-                    colors = TopAppBarDefaults.mediumTopAppBarColors(containerColor = Color(0xFFE1F5FE)),
+                    colors = TopAppBarDefaults.mediumTopAppBarColors(containerColor = Color(0xFFFFF3E0)),
                     actions = {
                         IconButton(onClick = { showMenu = true }) {
                             Icon(Icons.Default.MoreVert, contentDescription = "Menu")
@@ -92,7 +91,7 @@ fun FruitListScreen(navController: NavController, viewModel: FruitViewModel) {
                         Icon(Icons.Default.Search, contentDescription = "Search", tint = Color.Gray)
                     },
                     colors = OutlinedTextFieldDefaults.colors(
-                        focusedBorderColor = Color(0xFF4CAF50),
+                        focusedBorderColor = Color(0xFFFF9800),
                         unfocusedBorderColor = Color.Gray,
                         focusedTextColor = Color.Black,
                         unfocusedTextColor = Color.DarkGray
@@ -106,11 +105,11 @@ fun FruitListScreen(navController: NavController, viewModel: FruitViewModel) {
             contentPadding = paddingValues,
             modifier = Modifier
                 .fillMaxSize()
-                .background(Color(0xFFF1F8E9))
+                .background(Color(0xFFFFFDE7))
                 .padding(horizontal = 16.dp, vertical = 8.dp)
         ) {
-            items(filteredFruits) { fruit ->
-                FruitItem(navController, fruit, viewModel)
+            items(filteredFruits.size) { index ->
+                FruitItem(navController, filteredFruits[index], viewModel)
             }
         }
     }
@@ -187,7 +186,7 @@ fun FruitItem(navController: NavController, fruit: Fruit, viewModel: FruitViewMo
                     onClick = {
                         val smsIntent = Intent(Intent.ACTION_SENDTO)
                         smsIntent.data = "smsto:${fruit.phone}".toUri()
-                        smsIntent.putExtra("sms_body", "Hello Seller, I'm interested in your fruit product.")
+                        smsIntent.putExtra("sms_body", "Hello Seller, I'm interested in your fruit.")
                         context.startActivity(smsIntent)
                     },
                     shape = RoundedCornerShape(8.dp),
@@ -210,11 +209,32 @@ fun FruitItem(navController: NavController, fruit: Fruit, viewModel: FruitViewMo
                 }
 
                 Icon(
-                    imageVector = Icons.Default.Refresh, // Placeholder for PDF
+                    imageVector = Icons.Default.Refresh,
                     contentDescription = "Download PDF",
                     tint = Color.White
                 )
             }
         }
+    }
+}
+
+@Composable
+fun BottomNavigationBarFruit(navController: NavController) {
+    NavigationBar(
+        containerColor = Color(0xFFFFA726),
+        contentColor = Color.White
+    ) {
+        NavigationBarItem(
+            selected = false,
+            onClick = { navController.navigate(ROUT_FRUIT_LIST) },
+            icon = { Icon(Icons.Default.Home, contentDescription = "Fruit List") },
+            label = { Text("Home") }
+        )
+        NavigationBarItem(
+            selected = false,
+            onClick = { navController.navigate(ROUT_ADD_FRUIT) },
+            icon = { Icon(Icons.Default.AddCircle, contentDescription = "Add Fruit") },
+            label = { Text("Add") }
+        )
     }
 }

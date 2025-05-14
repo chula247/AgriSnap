@@ -43,12 +43,12 @@ import kotlinx.coroutines.launch
 import androidx.compose.ui.res.painterResource
 import androidx.compose.foundation.Image
 import androidx.compose.ui.geometry.Offset
+import coil.compose.rememberImagePainter
 import com.chula.agrisnap.R // Replace with your package name
 import com.chula.agrisnap.navigation.ROUTE_OFFER
 import com.chula.agrisnap.navigation.ROUTE_PROMOTION
 import com.chula.agrisnap.navigation.ROUT_CART
 import com.chula.agrisnap.navigation.ROUT_CHATS
-
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -102,18 +102,7 @@ fun StaterScreen(navController: NavController) {
                     selected = selectedIndex == 0,
                     onClick = { selectedIndex = 0 }
                 )
-                NavigationBarItem(
-                    icon = { Icon(Icons.Default.MailOutline, contentDescription = "Favorites") },
-                    label = { Text("Favorites") },
-                    selected = selectedIndex == 1,
-                    onClick = { navController.navigate(ROUT_CHATS) }
-                )
-                NavigationBarItem(
-                    icon = { Icon(Icons.Default.ShoppingCart, contentDescription = "Favorites") },
-                    label = { Text("Cart") },
-                    selected = selectedIndex == 1,
-                    onClick = { navController.navigate(ROUT_CART) }
-                )
+
                 NavigationBarItem(
                     icon = { Icon(Icons.Default.Person, contentDescription = "Profile") },
                     label = { Text("Profile") },
@@ -138,7 +127,7 @@ fun StaterScreen(navController: NavController) {
                 Column(modifier = Modifier.padding(16.dp)) {
                     Spacer(modifier = Modifier.height(20.dp))
 
-                    // Offers
+                    // Offers Section
                     val offerList = listOf(
                         Triple("https://via.placeholder.com/300x150.png?text=Offer+1", "50% Off on Groceries", "Grab Now"),
                         Triple("https://via.placeholder.com/300x150.png?text=Offer+2", "Free Delivery Above ₹500", "Shop Now"),
@@ -198,21 +187,17 @@ fun StaterScreen(navController: NavController) {
                                         modifier = Modifier.padding(8.dp)
                                     )
                                     Button(
-                                        onClick = { ROUTE_OFFER},
+                                        onClick = { navController.navigate(ROUTE_OFFER) },
                                         modifier = Modifier.padding(horizontal = 8.dp)
                                     ) {
                                         Text(buttonText)
                                     }
                                 }
-
-
-
                             }
                         }
                     }
 
                     Spacer(modifier = Modifier.height(20.dp))
-
 
                 }
 
@@ -224,7 +209,6 @@ fun StaterScreen(navController: NavController) {
                     "Fruits" to "https://source.unsplash.com/120x60/?fruits",
                     "Grains" to "https://source.unsplash.com/120x60/?grains",
                     "Dairy" to "https://source.unsplash.com/120x60/?dairy",
-                    "Poultry" to "https://source.unsplash.com/120x60/?chicken"
                 )
                 val visibleCategories = if (showAllCategories) categoryList else categoryList.take(5)
                 val categoryScrollState = rememberLazyListState()
@@ -278,7 +262,6 @@ fun StaterScreen(navController: NavController) {
                                         "Fruits" -> navController.navigate(ROUT_FRUIT)
                                         "Grains" -> navController.navigate(ROUT_GRAIN)
                                         "Dairy" -> navController.navigate(ROUT_DAIRY)
-                                        "Poultry" -> navController.navigate(ROUT_POULTRY)
                                     }
                                 }
                         ) {
@@ -308,10 +291,8 @@ fun StaterScreen(navController: NavController) {
                                             "Fruits" to R.drawable.fruits,
                                             "Grains" to R.drawable.grains,
                                             "Dairy" to R.drawable.dairy,
-                                            "Poultry" to R.drawable.poultry
                                         )
 
-// inside LazyRow -> items
                                         val imageRes = categoryImages[category] ?: R.drawable.placeholder
 
                                         Image(
@@ -336,22 +317,20 @@ fun StaterScreen(navController: NavController) {
                     }
                 }
 
-                // Promotions
+                // Promotions Section
                 val imageList = listOf(
                     "https://via.placeholder.com/400x200.png?text=Banner+1",
                     "https://via.placeholder.com/400x200.png?text=Banner+2",
                     "https://via.placeholder.com/400x200.png?text=Banner+3"
                 )
-                val imageTitles = listOf(
-                    "Big Savings Today!",
-                    "Flash Sale is On!",
-                    "Don't Miss This!"
-                )
-                val bannerScrollState = rememberLazyListState()
 
-                LaunchedEffect(Unit) {
+                // Scrolling banners
+                val bannerScrollState = rememberLazyListState()
+                val bannerWidth = remember { 400.dp }
+
+                LaunchedEffect(bannerScrollState) {
                     while (true) {
-                        delay(3000)
+                        delay(3000)  // Change every 3 seconds
                         val nextIndex = (bannerScrollState.firstVisibleItemIndex + 1) % imageList.size
                         coroutineScope.launch {
                             bannerScrollState.animateScrollToItem(nextIndex)
@@ -360,188 +339,30 @@ fun StaterScreen(navController: NavController) {
                 }
 
                 Spacer(modifier = Modifier.height(20.dp))
-                Text("Promotions", fontSize = 20.sp, fontWeight = FontWeight.ExtraBold, modifier = Modifier.padding(horizontal = 16.dp))
+
+                Text("Promotions", fontSize = 20.sp, fontWeight = FontWeight.ExtraBold)
                 Spacer(modifier = Modifier.height(10.dp))
 
                 LazyRow(
                     state = bannerScrollState,
-                    horizontalArrangement = Arrangement.spacedBy(12.dp),
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(200.dp)
-                        .padding(horizontal = 16.dp)
+                        .padding(horizontal = 16.dp),
+                    horizontalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
-                    items(imageList.zip(imageTitles)) { (imageUrl, title) ->
-                        Card(
-                            shape = RoundedCornerShape(16.dp),
-                            elevation = CardDefaults.elevatedCardElevation(4.dp),
+                    items(imageList) { imageUrl ->
+                        Image(
+                            painter = rememberImagePainter(imageUrl),
+                            contentDescription = null,
                             modifier = Modifier
+                                .width(bannerWidth)
                                 .fillMaxHeight()
-                                .width(300.dp)
-                                .shadow(
-                                    elevation = 20.dp,
-                                    shape = RoundedCornerShape(16.dp),
-                                    ambientColor = glowColor.copy(alpha = 0.8f),
-                                    spotColor = glowColor.copy(alpha = 0.8f)
-                                )
-                        ) {
-                            Box {
-
-                                val promotionItems = listOf(
-                                    Pair(R.drawable.toma, "Fresh Organic Tomatoes"),
-                                    Pair(R.drawable.mangos, "New: Juicy Mangoes"),
-                                    Pair(R.drawable.rice, "Top Pick: Basmati Rice"),
-                                    Pair(R.drawable.eggs, "Trending Now: Farm Eggs"),
-                                    Pair(R.drawable.yogurt, "Fresh Arrival: Greek Yogurt")
-                                )
-
-                                val bannerScrollState = rememberLazyListState()
-
-                                LaunchedEffect(Unit) {
-                                    while (true) {
-                                        delay(3000)
-                                        val nextIndex = (bannerScrollState.firstVisibleItemIndex + 1) % promotionItems.size
-                                        coroutineScope.launch {
-                                            bannerScrollState.animateScrollToItem(nextIndex)
-                                        }
-                                    }
-                                }
-
-                                Spacer(modifier = Modifier.height(20.dp))
-                                Text("Promotions", fontSize = 20.sp, fontWeight = FontWeight.ExtraBold, modifier = Modifier.padding(horizontal = 16.dp))
-                                Spacer(modifier = Modifier.height(10.dp))
-
-                                LazyRow(
-                                    state = bannerScrollState,
-                                    horizontalArrangement = Arrangement.spacedBy(12.dp),
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .height(220.dp)
-                                        .padding(horizontal = 16.dp)
-                                ) {
-                                    items(promotionItems) { (imageResId, title) ->
-                                        Card(
-                                            shape = RoundedCornerShape(16.dp),
-                                            elevation = CardDefaults.elevatedCardElevation(4.dp),
-                                            modifier = Modifier
-                                                .width(300.dp)
-                                                .fillMaxHeight()
-                                                .shadow(
-                                                    elevation = 20.dp,
-                                                    shape = RoundedCornerShape(16.dp),
-                                                    ambientColor = glowColor.copy(alpha = 0.8f),
-                                                    spotColor = glowColor.copy(alpha = 0.8f)
-                                                )
-                                        ) {
-                                            Box(modifier = Modifier.fillMaxSize()) {
-                                                Image(
-                                                    painter = painterResource(id = imageResId),
-                                                    contentDescription = title,
-                                                    contentScale = ContentScale.Crop,
-                                                    modifier = Modifier
-                                                        .fillMaxSize()
-                                                        .clip(RoundedCornerShape(16.dp))
-                                                )
-                                                Box(
-                                                    modifier = Modifier
-                                                        .fillMaxSize()
-                                                        .background(
-                                                            Brush.verticalGradient(
-                                                                colors = listOf(Color.Transparent, Color.Black.copy(alpha = 0.6f)),
-                                                                startY = 300f
-                                                            )
-                                                        )
-                                                )
-                                                Column(
-                                                    modifier = Modifier
-                                                        .align(Alignment.BottomStart)
-                                                        .padding(12.dp)
-                                                ) {
-                                                    Text(
-                                                        text = title,
-                                                        color = Color.White,
-                                                        fontSize = 18.sp,
-                                                        fontWeight = FontWeight.Bold
-                                                    )
-                                                    Spacer(modifier = Modifier.height(4.dp))
-                                                    Button(
-                                                        onClick = { ROUTE_PROMOTION },
-                                                        colors = ButtonDefaults.buttonColors(containerColor = Color.White),
-                                                        shape = RoundedCornerShape(12.dp),
-                                                        contentPadding = PaddingValues(horizontal = 16.dp, vertical = 4.dp),
-                                                        modifier = Modifier.defaultMinSize(minHeight = 32.dp)
-                                                    ) {
-                                                        Text("Shop Now", color = Color.Black, fontSize = 14.sp)
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-
-
-                                Box(
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .align(Alignment.BottomStart)
-                                        .background(
-                                            Brush.verticalGradient(
-                                                colors = listOf(Color.Transparent, Color.Black.copy(alpha = 0.7f))
-                                            )
-                                        )
-                                ) {
-                                    Text(
-                                        title,
-                                        color = Color.White,
-                                        fontSize = 18.sp,
-                                        fontWeight = FontWeight.Bold,
-                                        modifier = Modifier
-                                            .padding(12.dp)
-                                            .fillMaxWidth(),
-                                        textAlign = TextAlign.Start
-                                    )
-                                }
-                            }
-                        }
+                                .clip(RoundedCornerShape(12.dp))
+                        )
                     }
                 }
-
-
-                Spacer(modifier = Modifier.height(32.dp))
-
-                // Inside your Column, just after the Row of grain cards
-                val infiniteTransition = rememberInfiniteTransition()
-                val animatedOffset = infiniteTransition.animateFloat(
-                    initialValue = 0f,
-                    targetValue = 1000f,
-                    animationSpec = infiniteRepeatable(
-                        animation = tween(3000, easing = LinearEasing),
-                        repeatMode = RepeatMode.Restart
-                    )
-                )
-
-                val glowingBrush = Brush.linearGradient(
-                    colors = listOf(Color.Red, Color.Yellow, Color.Green, Color.Cyan, Color.Magenta),
-                    start = Offset(animatedOffset.value, 0f),
-                    end = Offset(animatedOffset.value + 300f, 300f)
-                )
-
-                Text(
-                    text = "✨ Best Value for Your Enjoyment ✨",
-                    fontSize = 20.sp,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(vertical = 16.dp),
-                    style = MaterialTheme.typography.titleMedium.copy(brush = glowingBrush),
-                    textAlign = TextAlign.Center
-                )
             }
         }
     )
-}
-
-@Preview(showBackground = true)
-@Composable
-fun PreviewStaterScreen() {
-    StaterScreen(navController = rememberNavController())
 }

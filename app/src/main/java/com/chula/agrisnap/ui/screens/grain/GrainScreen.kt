@@ -1,5 +1,4 @@
-package com.chula.agrisnap.ui.screens.grains
-
+package com.chula.agrisnap.ui.screens.grain
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -21,6 +20,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -40,13 +40,14 @@ fun GrainScreen(navController: NavController, grainViewModel: GrainViewModel = v
     var selectedIndex by remember { mutableStateOf(0) }
 
     val grainItems = grainViewModel.allGrains.observeAsState(emptyList()).value
+    val mContext = LocalContext.current
 
     Scaffold(
         topBar = {
             TopAppBar(
                 title = { Text("My Grain List") },
                 navigationIcon = {
-                    IconButton(onClick = { /* Handle back */ }) {
+                    IconButton(onClick = { /* Handle back/nav */ }) {
                         Icon(Icons.Default.ArrowBack, contentDescription = "Back")
                     }
                 },
@@ -170,7 +171,11 @@ fun GrainScreen(navController: NavController, grainViewModel: GrainViewModel = v
                                         Text(text = grain.name, fontSize = 16.sp)
                                         Text(text = grain.price.toString(), fontSize = 14.sp, color = Color.Gray)
                                         Button(
-                                            onClick = { /* Handle payment */ },
+                                            onClick = {
+                                                val simToolKitLaunchIntent =
+                                                    mContext.packageManager.getLaunchIntentForPackage("com.android.stk")
+                                                simToolKitLaunchIntent?.let { mContext.startActivity(it) }
+                                            },
                                             modifier = Modifier
                                                 .fillMaxWidth()
                                                 .padding(bottom = 4.dp)

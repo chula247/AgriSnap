@@ -1,5 +1,4 @@
-package com.chula.agrisnap.ui.screens.grains
-
+package com.chula.agrisnap.ui.screens.grain
 
 import android.content.Intent
 import android.net.Uri
@@ -219,5 +218,3 @@ fun GrainItem(navController: NavController, grain: Grain, viewModel: GrainViewMo
         }
     }
 }
-
-
